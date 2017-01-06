@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,16 +38,12 @@ namespace ConsoleApplication
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddOptions();
-
             //services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));
-
             services.AddMvc();
-
             services.AddAuthentication(options =>
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme
             );
             //services.AddApplicationInsightsTelemetry(Configuration);
-
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -62,22 +59,42 @@ namespace ConsoleApplication
             }
 
             //app.UseApplicationInsightsExceptionTelemetry();
-
             //app.UseMiddleware<CookieMiddleware>();
 
             app.UseStaticFiles();
 
             app.UseCookieAuthentication();
 
-            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions{
+            var events = new OpenIdConnectEvents();
+            events.OnRedirectToIdentityProvider = (context) =>
+            {
+                var s = context.State;
+                return Task.FromResult(0);
+            };
+            events.OnRedirectToIdentityProviderForSignOut = (context) =>
+            {
+                return Task.FromResult(0);
+            };
 
+            events.OnUserInformationReceived = (context) =>
+            {
+                return Task.FromResult(0);
+            };
+
+            events.OnAuthorizationCodeReceived = (context) =>
+            {
+                return Task.FromResult(0);
+            };
+
+            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
+            {
                 ClientId = "1c5b9d21-5a08-46e0-a7f2-3e445a0ab672",
                 ClientSecret = "nAf5+Acn7csm53TJH1QkHvkogC0mVcBTvonHk77yv3E=",
                 Authority = "https://login.microsoftonline.com/fb86ec9d-f0a6-4792-8451-ab10a18bbbbc",
                 CallbackPath = "/signin-oidc",
-                ResponseType = OpenIdConnectResponseType.CodeIdToken
+                ResponseType = OpenIdConnectResponseType.CodeIdToken,
+                Events = events
             });
-            
 
             app.UseMvc(routes =>
             {
