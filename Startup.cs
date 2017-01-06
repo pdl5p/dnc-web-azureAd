@@ -17,10 +17,10 @@ namespace ConsoleApplication
         public Startup(IHostingEnvironment env)
         {
 
-            var builder = new ConfigurationBuilder();
-                //.SetBasePath(env.ContentRootPath)
-                //.AddJsonFile("appsettings.json", false)
-                //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", false)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             if(env.IsDevelopment()){
                 //builder.AddApplicationInsightsSettings(developerMode: true);
@@ -37,7 +37,7 @@ namespace ConsoleApplication
 
             //services.Configure<AppConfig>(Configuration.GetSection("AppConfig"));
 
-            //services.AddMvc();
+            services.AddMvc();
             //services.AddApplicationInsightsTelemetry(Configuration);
 
         }
@@ -47,7 +47,7 @@ namespace ConsoleApplication
 
             //app.UseApplicationInsightsRequestTelemetry();
 
-            //loggerFactory.AddConsole();
+            loggerFactory.AddConsole();
 
             if (env.IsDevelopment())
             {
@@ -58,17 +58,15 @@ namespace ConsoleApplication
 
             //app.UseMiddleware<CookieMiddleware>();
 
-            //app.UseStaticFiles();
+            app.UseStaticFiles();
 
-            // app.UseMvc(routes =>
-            // {
-            //     routes.MapRoute(
-            //         name: "default",
-            //         template: "{controller=Home}/{action=Index}"
-            //     );
-            // });
-
-
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}"
+                );
+            });
         }
     }
 }
