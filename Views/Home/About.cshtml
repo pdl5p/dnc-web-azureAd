@@ -1,0 +1,17 @@
+@using System.Security.Principal
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About</title>
+</head>
+<body>
+
+    @if (User.Identity.IsAuthenticated) {
+    <h1>Hello @User.Identity.Name!</h1>
+    } else {
+    <h2>Hello anonymous</h2>
+    }
+
+</body>
+</html>

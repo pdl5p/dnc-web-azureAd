@@ -9,5 +9,9 @@ namespace ConsoleApplication
         public IActionResult Index(){
             return View();
         }
+
+        public IActionResult About(){
+            return View();
+        }
     }
 }
